@@ -12,6 +12,7 @@ st.set_page_config(page_title="Resume Tailor Pro", layout="wide")
 st.title("🧠 Resume Tailor Pro")
 
 openai.api_key = st.secrets["OPENAI_API_KEY"]
+from openai import OpenAI
 
 def tailor_resume(resume_text, job_description):
     prompt = f"""
@@ -25,15 +26,17 @@ And this job description:
 
 Rewrite the summary and experience sections of the resume to match the job description using relevant keywords, while keeping it human and ATS-friendly. Keep formatting professional.
 """
-   client = openai.OpenAI()
 
-response = client.chat.completions.create(
-    model="gpt-4",
-    messages=[{"role": "user", "content": prompt}],
-    temperature=0.7
-)
+    client = OpenAI()
 
-return response.choices[0].message.content
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7
+    )
+
+    return response.choices[0].message.content
+
 
 resume_file = st.file_uploader("📄 Upload Your Resume (.pdf, .docx, .txt)", type=["pdf", "docx", "txt"])
 job_description = st.text_area("📝 Paste the Job Description", height=300)
