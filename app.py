@@ -5,6 +5,8 @@ import pdfplumber
 from docx import Document
 from io import BytesIO
 from utils import extract_text, generate_docx
+from openai import OpenAI
+
 
 st.set_page_config(page_title="Resume Tailor Pro", layout="wide")
 st.title("🧠 Resume Tailor Pro")
@@ -23,12 +25,15 @@ And this job description:
 
 Rewrite the summary and experience sections of the resume to match the job description using relevant keywords, while keeping it human and ATS-friendly. Keep formatting professional.
 """
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.7
-    )
-    return response['choices'][0]['message']['content']
+   client = openai.OpenAI()
+
+response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[{"role": "user", "content": prompt}],
+    temperature=0.7
+)
+
+return response.choices[0].message.content
 
 resume_file = st.file_uploader("📄 Upload Your Resume (.pdf, .docx, .txt)", type=["pdf", "docx", "txt"])
 job_description = st.text_area("📝 Paste the Job Description", height=300)
